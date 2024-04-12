@@ -6,6 +6,3 @@ CREATE TABLE `User` (
   UNIQUE INDEX `User_email_key`(`email`),
   PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
--- insert
-INSERT INTO User (`email`, `name`)
-VALUES ("sample@sample.com", "user")
