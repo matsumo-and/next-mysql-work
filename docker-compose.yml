@@ -36,8 +36,8 @@ services:
       - TZ=${TZ}
     build: ./mysql
     container_name: mysql
-    # ports:
-    #   - "3306:3306"
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
