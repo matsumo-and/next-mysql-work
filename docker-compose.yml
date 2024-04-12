@@ -17,8 +17,8 @@ services:
       - ./next-app:/next-app
     working_dir: "/next-app"
     ports:
-      - 8081:8080
-    command: sh -c 'yarn build; yarn start'
+      - 3000:3000
+    command: sh -c 'yarn prisma generate; yarn dev'
     networks:
       backend:
         ipv4_address: 172.28.2.10
