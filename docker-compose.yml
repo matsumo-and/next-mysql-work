@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  next-app:
+    image: node:20.11.1
+    environment:
+      - MYSQL_SERVER=db
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+      - TZ=${TZ}
+      - CHOKIDAR_USEPOLLING=true
+    build: ./next-app
+    container_name: next-app
+    tty: true
+    volumes:
+      - ./next-app:/next-app
+    working_dir: "/next-app"
+    ports:
+      - 8081:8080
+    command: sh -c 'yarn build; yarn start'
+    networks:
+      backend:
+        ipv4_address: 172.28.2.10
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.3.0
+    environment:
+      - MYSQL_ROOT_HOST=${DB_ROOT_HOST}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - TZ=${TZ}
+    build: ./mysql
+    container_name: mysql
+    # ports:
+    #   - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/logs:/var/log/mysql
+    networks:
+      backend:
+        ipv4_address: 172.28.2.5
+
+networks:
+  backend:
+    driver: bridge
+    name: next-app-network
+    ipam:
+      config:
+        - subnet: 172.28.2.0/24
+
+volumes:
+  mysql_data:
